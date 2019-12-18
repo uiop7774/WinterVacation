@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 import Combine
 
-let rawTest = [
+var rawTest = [
     ["title": "omae wa", "author": "black", "date": "2019/12/4", "content": "幹林涼"],
     ["title": "mou shindeiru", "author": "dick", "date": "2019/12/4", "content": "老雞掰"]
 ]
@@ -42,9 +42,10 @@ class ArticleFetcher: ObservableObject{
     
     let objectWillChange = PassthroughSubject<ArticleFetcher, Never>()
     
-    var articles = [Article](){
+    @Published var articles = [Article](){
         didSet{
             objectWillChange.send(self)
+            print("in didSet")
         }
     }
     
@@ -69,7 +70,7 @@ class ArticleFetcher: ObservableObject{
         else {
             let Data = data
             do{
-                print("Data: ", Data)
+                print("Data: ", Data ?? "888")
                 let rcv_json = try JSONSerialization.jsonObject(
                     with: Data!,
                     options: .allowFragments
@@ -82,37 +83,57 @@ class ArticleFetcher: ObservableObject{
                 print("receive failed")
             }
         }
-        /*
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if error == nil, let Data = data{
-                do{
-                    print("Data: ", Data)
-                    let rcv_json = try JSONSerialization.jsonObject(
-                        with: Data,
-                        options: .allowFragments
-                        )as! [[String: String]]
-                    //self.article = rcv_json
-                    print_Response(dictionary: rcv_json)
-                    self.articles = DictToArticle(dictionary: rcv_json)
-                }
-                catch{
-                    print("receive failed")
-                }
-            }else{
-                print("###error getting###")
+        
+    }
+    
+    func getData(urlString: String) -> [Article]{
+        
+        var temp = [Article]()
+        
+        print("in getData")
+        
+        guard let url = URL(string: urlString) else { return temp }
+        
+        /*get json*/
+        rawTest.append(["title": "nani", "author": "dick", "date": "2019/12/4", "content": "花惹發"])
+        dump(rawTest)
+        let jsonTest = try? JSONSerialization.data(withJSONObject: rawTest, options: .fragmentsAllowed)
+        /*get json*/
+        
+        /*send data*/
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonTest
+        
+        let (data, response, error) = URLSession.shared.synchronousDataTask(with: request)
+        if let error = error {
+            print("Synchronous task ended with error: \(error)")
+        }
+        else {
+            let Data = data
+            do{
+                print("Data: ", Data ?? "8888")
+                let rcv_json = try JSONSerialization.jsonObject(
+                    with: Data!,
+                    options: .allowFragments
+                    )as! [[String: String]]
+                //self.article = rcv_json
+                print_Response(dictionary: rcv_json)
+                temp = DictToArticle(dictionary: rcv_json)
+            }
+            catch{
+                print("receive failed")
             }
         }
-        task.resume()
-        */
-        /*send data*/
         
-        
+        return temp
     }
     
 }
 
 func DictToArticle( dictionary : [[String: String]]) -> [Article]{
-    
+    print("in DictToArticle")
     var ArticleList = [Article]()
     
     for article in dictionary{
@@ -122,14 +143,16 @@ func DictToArticle( dictionary : [[String: String]]) -> [Article]{
             date: article["date"] ?? "what date??",
             content: article["content"] ?? "what content??"
         )
+        print("title: ", article["title"])
         ArticleList.append(temp)
     }
     return ArticleList
 }
 
 func print_Response( dictionary : [[String: String]] ) -> Void {
+    let max = dictionary.count - 1
     print("in print_json")
-    for index in 0...1{
+    for index in 0...max{
         print("index: ", index)
         print("title: ", dictionary[index]["title"] ?? "failed")
         print("author: ", dictionary[index]["author"] ?? "failed")

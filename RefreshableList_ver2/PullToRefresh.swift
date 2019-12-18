@@ -6,53 +6,44 @@
 //  Copyright © 2019 James. All rights reserved.
 //
 
-import Foundation
 import SwiftUI
 
-struct PullToRefresh: UIViewRepresentable{
+public struct PullToRefresh: UIViewRepresentable {
     
+    let action: () -> Void
+    @Binding var isShowing: Bool
     
-    @State var needRefresh = false
-    
-    class Coordinator: NSObject, UIScrollViewDelegate{
-        
-        var control: PullToRefresh
-        
-        init(_ control: PullToRefresh) {
-            self.control = control
-        }
-        
-        func listViewDidScroll(_ scrollView: UIScrollView) {
-            print("sucesss")
-        }
-        
-        @objc func handleRefresh(sender: UIRefreshControl){
-            print("done")
-            sender.endRefreshing()
-        }
-        
-    }
-     
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
+    public init(
+        action: @escaping () -> Void,
+        isShowing: Binding<Bool>
+    ) {
+        self.action = action
+        _isShowing = isShowing
     }
     
+    public class Coordinator {
+        let action: () -> Void
+        let isShowing: Binding<Bool>
         
-    func makeUIView(context: UIViewRepresentableContext<PullToRefresh>) -> UIView {
+        init(
+            action: @escaping () -> Void,
+            isShowing: Binding<Bool>
+        ) {
+            self.action = action
+            self.isShowing = isShowing
+        }
         
-        let control = UITableView()
-        control.refreshControl = UIRefreshControl()
-        control.refreshControl?.addTarget(context.coordinator, action: #selector(Coordinator.handleRefresh), for: .valueChanged)
-        
-        
-        print("in makeUIView")
+        @objc func onValueChanged() {
+            isShowing.wrappedValue = true
+            action()
+        }
+    }
+    
+    public func makeUIView(context: UIViewRepresentableContext<PullToRefresh>) -> UIView {
         return UIView(frame: .zero)
-        
     }
     
-    
-    func tableView(root: UIView) -> UITableView? {
+    private func tableView(root: UIView) -> UITableView? {
         for subview in root.subviews {
             if let tableView = subview as? UITableView {
                 return tableView
@@ -63,9 +54,7 @@ struct PullToRefresh: UIViewRepresentable{
         return nil
     }
 
-    
-    func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<PullToRefresh>) {
-        
+    public func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<PullToRefresh>) {
         DispatchQueue.main.asyncAfter(deadline: .now()) {
             guard let viewHost = uiView.superview?.superview else {
                 return
@@ -75,24 +64,22 @@ struct PullToRefresh: UIViewRepresentable{
             }
             
             if let refreshControl = tableView.refreshControl {
-                if self.needRefresh {
+                if self.isShowing {
                     refreshControl.beginRefreshing()
-                    self.needRefresh = false
                 } else {
                     refreshControl.endRefreshing()
-                    self.needRefresh = true
                 }
                 return
             }
+            
+            let refreshControl = UIRefreshControl()
+            refreshControl.addTarget(context.coordinator, action: #selector(Coordinator.onValueChanged), for: .valueChanged)
+            tableView.refreshControl = refreshControl
         }
-        /*
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(context.coordinator, action: #selector(Coordinator.handleRefresh), for: .valueChanged)
-        tableView.refreshControl = refreshControl
-        */
-        print("in updateUIView")
-        
-        
+    }
+    
+    public func makeCoordinator() -> Coordinator {
+        return Coordinator(action: action, isShowing: $isShowing)
     }
 }
 

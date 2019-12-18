@@ -9,9 +9,27 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var articles = ArticleFetcher(urlString: "http://140.115.3.108/api/v1/board").articles
+    @State private var isShowing = false
     
+    var body: some View {
+        NavigationView{
+            List(articles, id: \.title){article in
+                ArticleRow(article: article)
+            }
+            .navigationBarTitle(Text("討論版"))
+            .background(PullToRefresh(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    let article_fetcher = ArticleFetcher.init(urlString: "http://140.115.3.108/api/v1/board")
+                    self.articles = article_fetcher.getData(urlString: "http://140.115.3.108/api/v1/board")
+                    self.isShowing = false
+                }
+            }, isShowing: $isShowing))
+        }
+    }
+    /*
     @State var articleManager = ArticleFetcher(urlString: "http://140.115.3.108/api/v1/board")
-    @State var needRefresh = false
+    @State private var isShowing = false
     
     var body: some View {
         NavigationView{
@@ -19,9 +37,16 @@ struct ContentView: View {
                 ArticleRow(article: article)
             }
             .navigationBarTitle(Text("討論版"))
-            .background( PullToRefresh() )
+            .background(PullToRefresh(action: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.articleManager.getData(urlString: "http://140.115.3.108/api/v1/board")
+                    self.isShowing = false
+                }
+            }, isShowing: $isShowing))
         }
     }
+     */
+    
 }
 
 struct ContentView_Previews: PreviewProvider {
