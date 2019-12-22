@@ -15,7 +15,16 @@ struct ContentView: View {
     var body: some View {
         NavigationView{
             List(articles, id: \.title){article in
-                ArticleRow(article: article)
+                NavigationLink(destination: ArticleRow(article: article)){
+                    VStack(alignment: .leading) {
+                        Text(article.title)
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .lineLimit(nil)
+                        Text(article.date)
+                    }
+                }
+                //ArticleRow(article: article)
             }
             .navigationBarTitle(Text("討論版"))
             .background(PullToRefresh(action: {
