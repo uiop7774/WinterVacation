@@ -10,9 +10,22 @@ import Foundation
 import SwiftUI
 import Combine
 
-struct Article {
+struct Reply: Codable {
+    var id: String
+    var department: String
+    var like: String
+    var content: String
+}
+
+struct Article: Codable {
     var id: String
     var title: String
+    var section: String
+    var department: String
     var date: String
     var content: String
+    var popularity: String
+    var like: String
+    var response: String
+    var replies: [Reply]
 }

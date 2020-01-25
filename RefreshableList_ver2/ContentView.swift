@@ -9,52 +9,113 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var articles = ArticleFetcher(urlString: "http://140.115.3.108/api/v1/board").articles
+    
+    //@State var articles = ArticleFetcher(urlString: "http://140.115.3.108/api/v1/board").articles
+    @ObservedObject var articleFetcher = ArticleFetcher()
     @State private var isShowing = false
+    @State private var tag:Int? = nil
     
     var body: some View {
         NavigationView{
-            List(articles, id: \.title){article in
-                NavigationLink(destination: ArticleRow(article: article)){
-                    VStack(alignment: .leading) {
-                        Text(article.title)
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .lineLimit(nil)
-                        Text(article.date)
+            ZStack{
+                List(articleFetcher.AF_articles, id: \.title) { article in
+                    NavigationLink(destination: ArticleContent(article: article)){
+                        ArticleRow(article: article)
                     }
                 }
-                //ArticleRow(article: article)
-            }
-            .navigationBarTitle(Text("討論版"))
-            .background(PullToRefresh(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    let article_fetcher = ArticleFetcher.init(urlString: "http://140.115.3.108/api/v1/board")
-                    self.articles = article_fetcher.getData(urlString: "http://140.115.3.108/api/v1/board")
-                    self.isShowing = false
+                    .navigationBarTitle(Text("討論版"), displayMode: .inline)
+                    
+                    .background(PullToRefresh(action: {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            //let article_fetcher = ArticleFetcher.init(urlString: "http://140.115.3.108/api/v1/board")
+                            //self.articles = article_fetcher.getData(urlString: "http://140.115.3.108/api/v1/board")
+                            self.isShowing = false
+                        }
+                    }, isShowing: $isShowing))
+                    
+                
+                NavigationLink(destination: WriteArticle(), tag: 1, selection: $tag){
+                    EmptyView()
                 }
-            }, isShowing: $isShowing))
+                
+                VStack{
+                    Spacer()
+                    HStack{
+                        Spacer()
+                        
+                        Button(action: {
+                            print("edit button tpped")
+                            self.tag = 1
+                        }){
+                            Image(systemName: "pencil")
+                                .font(.system(size:50))
+                                .frame(width: 77, height: 70)
+                                .imageScale(.small)
+                        }
+                        .background(Color.white)
+                        .cornerRadius(38.5)
+                        .padding()
+                        .shadow(color: Color.black.opacity(0.3),
+                                radius: 10,
+                                x: 3,
+                                y: 3)
+                        
+                    }
+                }
+            }
         }
-    }
-    /*
-    @State var articleManager = ArticleFetcher(urlString: "http://140.115.3.108/api/v1/board")
-    @State private var isShowing = false
     
-    var body: some View {
+ 
+        /*
         NavigationView{
-            List(articleManager.articles, id: \.title){article in
-                ArticleRow(article: article)
-            }
-            .navigationBarTitle(Text("討論版"))
-            .background(PullToRefresh(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.articleManager.getData(urlString: "http://140.115.3.108/api/v1/board")
-                    self.isShowing = false
+            ZStack{
+                List(articles, id: \.title){article in
+                    NavigationLink(destination: ArticleContent(article: article)){
+                        ArticleRow(article: article)
+                    }
                 }
-            }, isShowing: $isShowing))
+                    .navigationBarTitle(Text("討論版"), displayMode: .inline)
+                    .background(PullToRefresh(action: {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            let article_fetcher = ArticleFetcher.init(urlString: "http://140.115.3.108/api/v1/board")
+                            self.articles = article_fetcher.getData(urlString: "http://140.115.3.108/api/v1/board")
+                            self.isShowing = false
+                        }
+                    }, isShowing: $isShowing))
+                
+                NavigationLink(destination: WriteArticle(), tag: 1, selection: $tag){
+                    EmptyView()
+                }
+                
+                VStack{
+                    Spacer()
+                    HStack{
+                        Spacer()
+                        
+                        Button(action: {
+                            print("edit button tpped")
+                            self.tag = 1
+                        }){
+                            Image(systemName: "pencil")
+                                .font(.system(size:50))
+                                .frame(width: 77, height: 70)
+                                .imageScale(.small)
+                        }
+                        .background(Color.white)
+                        .cornerRadius(38.5)
+                        .padding()
+                        .shadow(color: Color.black.opacity(0.3),
+                                radius: 10,
+                                x: 3,
+                                y: 3)
+                        
+                    }
+                }
+            }
+            
         }
+        */
     }
-     */
     
 }
 
