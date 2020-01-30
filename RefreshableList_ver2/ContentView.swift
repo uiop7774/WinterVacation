@@ -7,9 +7,65 @@
 //
 
 import SwiftUI
+//這是起始頁面的拉
+struct View1: View {
+    @Binding var push: Int
 
-struct ContentView: View {
-    
+    var body: some View {
+        ZStack {
+            Color.green
+            Button(action: {
+                withAnimation(.easeOut(duration: 0.3)) {
+                    self.push = 1
+                    print("click home")
+                }
+            }) {
+                VStack{
+                    Text("Origin Page")
+                    Text("PUSH")
+                }
+               
+            }
+        }
+        .edgesIgnoringSafeArea(.all)
+    }
+}
+//個人空間的拉
+struct View2: View {
+    @Binding var push: Int
+    @State private var article = ""
+    var body: some View{
+        VStack {
+            
+            Button(action: {
+                withAnimation(.easeOut(duration: 0.3)) {
+                    self.push = 0
+                }
+            }) {
+                VStack{
+                    Text("Personal Page")
+                    Text("PUSH")
+                }
+               
+            }
+            VStack{
+                TextField("標題...", text: $article)
+                .frame(width: 350, height: 50)
+                .font(.system(size: 30))
+                .padding()
+                .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.green, lineWidth: 3)
+                )
+            }
+            
+        }
+        .edgesIgnoringSafeArea(.all)
+    }
+}
+//討論版的拉
+struct ContentViewA: View {
+    @Binding var push: Int
     //@State var articles = ArticleFetcher(urlString: "http://140.115.3.108/api/v1/board").articles
     @ObservedObject var articleFetcher = ArticleFetcher()
     @State private var isShowing = false
@@ -18,13 +74,45 @@ struct ContentView: View {
     var body: some View {
         NavigationView{
             ZStack{
+                
                 List(articleFetcher.AF_articles, id: \.title) { article in
                     NavigationLink(destination: ArticleContent(article: article)){
                         ArticleRow(article: article)
                     }
                 }
-                    .navigationBarTitle(Text("討論版"), displayMode: .inline)
                     
+                    .navigationBarItems(leading:
+                        HStack{
+                            Button(action: {
+                                withAnimation(.easeOut(duration: 0.3)) {
+                                    self.push = 0
+                                    print("click art")
+                                }
+                            }){
+                                Image(systemName: "house")
+                                    .font(.system(size:25))
+
+                                    .imageScale(.small)
+                            }
+                           
+                        }
+                        ,trailing:
+                        Button(action: {
+                           print("edit button tpped")
+                            self.push = 2
+                          // self.tag = 1
+                       }){
+                           Image(systemName: "gear")
+                               .font(.system(size:25))
+
+                               .imageScale(.small)
+                       }
+                        
+                    )
+                
+                
+                    .navigationBarTitle(Text("討論版"), displayMode: .inline)
+                 
                     .background(PullToRefresh(action: {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                             //let article_fetcher = ArticleFetcher.init(urlString: "http://140.115.3.108/api/v1/board")
@@ -33,12 +121,15 @@ struct ContentView: View {
                         }
                     }, isShowing: $isShowing))
                     
-                
+                    
                 NavigationLink(destination: WriteArticle(), tag: 1, selection: $tag){
                     EmptyView()
                 }
                 
                 VStack{
+                   
+                        
+                    
                     Spacer()
                     HStack{
                         Spacer()
@@ -65,62 +156,49 @@ struct ContentView: View {
             }
         }
     
- 
-        /*
-        NavigationView{
-            ZStack{
-                List(articles, id: \.title){article in
-                    NavigationLink(destination: ArticleContent(article: article)){
-                        ArticleRow(article: article)
-                    }
-                }
-                    .navigationBarTitle(Text("討論版"), displayMode: .inline)
-                    .background(PullToRefresh(action: {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            let article_fetcher = ArticleFetcher.init(urlString: "http://140.115.3.108/api/v1/board")
-                            self.articles = article_fetcher.getData(urlString: "http://140.115.3.108/api/v1/board")
-                            self.isShowing = false
-                        }
-                    }, isShowing: $isShowing))
-                
-                NavigationLink(destination: WriteArticle(), tag: 1, selection: $tag){
-                    EmptyView()
-                }
-                
-                VStack{
-                    Spacer()
-                    HStack{
-                        Spacer()
-                        
-                        Button(action: {
-                            print("edit button tpped")
-                            self.tag = 1
-                        }){
-                            Image(systemName: "pencil")
-                                .font(.system(size:50))
-                                .frame(width: 77, height: 70)
-                                .imageScale(.small)
-                        }
-                        .background(Color.white)
-                        .cornerRadius(38.5)
-                        .padding()
-                        .shadow(color: Color.black.opacity(0.3),
-                                radius: 10,
-                                x: 3,
-                                y: 3)
-                        
-                    }
-                }
-            }
-            
-        }
-        */
+
     }
     
 }
 
+struct ContentView: View {
+    @State private var push = 0
+
+    var body: some View {
+    
+            switch push {
+                //起始頁面
+            case 0:
+                return AnyView(View1(push: $push))
+                .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .leading)))
+                //討論版
+            case 1:
+               return AnyView(ContentViewA(push: $push))
+                   .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .trailing)))
+                //個人空間
+            case 2:
+            return AnyView(View2(push: $push))
+                .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .trailing)))
+            default:
+                return AnyView(View1(push: $push))
+                    .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .trailing)))
+            }
+           
+    }
+}
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }
 }
+/*
+           if !push {
+               View1(push: $push)
+                   .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .leading)))
+           }
+
+           if push {
+               ContentViewA(push: $push)
+                   .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .trailing)))
+           }
+            */
