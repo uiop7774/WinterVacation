@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1A20663C23D048260057E040 /* ArticleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A20663B23D048260057E040 /* ArticleRow.swift */; };
+		1A9BA40F241E57C60034332B /* SwipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9BA40E241E57C60034332B /* SwipeView.swift */; };
 		1AC0DD5C23CE073700CF4C45 /* WriteArticle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC0DD5B23CE073700CF4C45 /* WriteArticle.swift */; };
 		1AFB425F23A8EC0300585B3B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFB425E23A8EC0300585B3B /* AppDelegate.swift */; };
 		1AFB426123A8EC0300585B3B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFB426023A8EC0300585B3B /* SceneDelegate.swift */; };
@@ -24,6 +25,7 @@
 
 /* Begin PBXFileReference section */
 		1A20663B23D048260057E040 /* ArticleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleRow.swift; sourceTree = "<group>"; };
+		1A9BA40E241E57C60034332B /* SwipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeView.swift; sourceTree = "<group>"; };
 		1AC0DD5B23CE073700CF4C45 /* WriteArticle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteArticle.swift; sourceTree = "<group>"; };
 		1AFB425B23A8EC0300585B3B /* RefreshableList_ver2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RefreshableList_ver2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AFB425E23A8EC0300585B3B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 				1A20663B23D048260057E040 /* ArticleRow.swift */,
 				1AFB427623A9142400585B3B /* ArticleContent.swift */,
 				1AFB427C23A9267A00585B3B /* PullToRefresh.swift */,
+				1A9BA40E241E57C60034332B /* SwipeView.swift */,
 				1AFB426423A8EC0600585B3B /* Assets.xcassets */,
 				1AFB426923A8EC0600585B3B /* LaunchScreen.storyboard */,
 				1AFB426C23A8EC0600585B3B /* Info.plist */,
@@ -169,6 +172,7 @@
 			files = (
 				1AC0DD5C23CE073700CF4C45 /* WriteArticle.swift in Sources */,
 				1AFB427323A8ECBA00585B3B /* ArticleFetcher.swift in Sources */,
+				1A9BA40F241E57C60034332B /* SwipeView.swift in Sources */,
 				1AFB425F23A8EC0300585B3B /* AppDelegate.swift in Sources */,
 				1AFB426123A8EC0300585B3B /* SceneDelegate.swift in Sources */,
 				1AFB427B23A918E000585B3B /* Article.swift in Sources */,

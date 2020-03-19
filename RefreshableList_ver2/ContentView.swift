@@ -163,11 +163,16 @@ struct ContentViewA: View {
         NavigationView{
             ZStack{
                 
+                SwipeView()
+                    .padding(.bottom)
+                
+                /*
                 List(articleFetcher.AF_articles, id: \.title) { article in
                     NavigationLink(destination: ArticleContent(article: article)){
                         ArticleRow(article: article)
                     }
                 }
+                 */
                     
                     .navigationBarItems(leading:
                         HStack{
@@ -200,7 +205,8 @@ struct ContentViewA: View {
                 
                 
                     .navigationBarTitle(Text("討論版"), displayMode: .inline)
-                 
+                    
+                    /*
                     .background(PullToRefresh(action: {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                             //let article_fetcher = ArticleFetcher.init(urlString: "http://140.115.3.108/api/v1/board")
@@ -208,6 +214,7 @@ struct ContentViewA: View {
                             self.isShowing = false
                         }
                     }, isShowing: $isShowing))
+                    */
                     
                     
                 NavigationLink(destination: WriteArticle(), tag: 1, selection: $tag){
