@@ -7,27 +7,69 @@
 //
 
 import SwiftUI
+struct traffic: View{
+    
+    var body: some View {
+         Text("交通板施工中")
+    }
+   
+}
+//這是設定頁面拉
+struct setting: View{
+    @State private var username = ""
+    var body: some View {
+        VStack{
+            Text("設定的地方喔")
+            
+            List {
+                HStack {
+                    Text("Username").bold()
+                    Divider()
+                    TextField("Username", text: $username)
+                }
+                VStack {
+                    HStack{
+                        Text("生日").bold()
+                        Spacer()
+                    }
+                    
+                    Divider()
+                    TextField("自己輸入拉", text: $username)
+                }
+                HStack {
+                    Text("感情").bold()
+                    Divider()
+                    TextField("輸入狀況喔", text: $username)
+                }
+               HStack {
+                   Text("後面再補拉啦啦啦").bold()
+                   Divider()
+                   TextField("Username", text: $username)
+               }
+            }
+        }
+        
+    }
+   
+}
 //這是起始頁面的拉
 struct View1: View {
     @Binding var push: Int
-
+    //@State private var val = false
     var body: some View {
-        ZStack {
-            Color.green
-            Button(action: {
-                withAnimation(.easeOut(duration: 0.3)) {
-                    self.push = 1
-                    print("click home")
-                }
-            }) {
-                VStack{
-                    Text("Origin Page")
-                    Text("PUSH")
-                }
-               
+        Button(action: {
+            withAnimation(.easeOut(duration: 0.3)) {
+                self.push = 1
             }
+        }) {
+            VStack{
+                Text("Personal Page")
+                Text("PUSH oooo")
+                Text("起始頁面")
+            }
+           
         }
-        .edgesIgnoringSafeArea(.all)
+        
     }
 }
 //個人空間的拉
@@ -255,12 +297,57 @@ struct ContentViewA: View {
     }
     
 }
-
+struct ManagerView: View {
+    @State private var push = 0
+    var body: some View {
+    
+    
+    switch push {
+                   //起始頁面
+               case 0:
+                   return AnyView(View1(push: $push))
+                  
+                   .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .leading)))
+                   //討論版
+               case 1:
+                  return AnyView(ContentViewA(push: $push))
+                      .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .trailing)))
+                   
+                   //個人空間
+               case 2:
+               return AnyView(View2(push: $push))
+                   .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .trailing)))
+               case 3:
+               return AnyView(View3(push: $push))
+                   .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .trailing)))
+               default:
+                   return AnyView(View1(push: $push))
+                      .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .trailing)))
+               }
+    }
+}
 struct ContentView: View {
     @State private var push = 0
 
     var body: some View {
-    
+        TabView{
+            ManagerView().tabItem {
+                Image(systemName: "list.dash")
+                Text("討論")
+            }
+            .tag(0)
+            traffic().tabItem{
+                Image(systemName: "square.and.pencil")
+                Text("交通")
+            }
+            .tag(1)
+            setting().tabItem{
+                Image(systemName: "square.and.pencil")
+                Text("個人")
+            }
+            .tag(1)
+        }
+        /*
             switch push {
                 //起始頁面
             case 0:
@@ -283,7 +370,7 @@ struct ContentView: View {
                 return AnyView(View1(push: $push))
                     .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .trailing)))
             }
-           
+           */
     }
 }
 struct ContentView_Previews: PreviewProvider {
@@ -301,4 +388,4 @@ struct ContentView_Previews: PreviewProvider {
                ContentViewA(push: $push)
                    .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .trailing)))
            }
-            */
+      */
