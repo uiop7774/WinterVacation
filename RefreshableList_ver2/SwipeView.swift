@@ -22,7 +22,7 @@ struct SwipeView: View {
     var smallSetions = ["最新", "熱門", "我的追蹤"]
     var largeSections = ["全部", "我的訂閱", "中央大學", "官方公告", "武漢肺炎", "美妝"]
     
-    let spacing: CGFloat = 10
+    let spacing: CGFloat = 5
     
     var body: some View{
         GeometryReader { geometry in
@@ -106,8 +106,6 @@ struct SwipeView: View {
                             .frame(width: geometry.size.width)
                             .background(PullToRefresh(action: {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                    //let article_fetcher = ArticleFetcher.init(urlString: "http://140.115.3.108/api/v1/board")
-                                    //self.articles = article_fetcher.getData(urlString: "http://140.115.3.108/api/v1/board")
                                     self.isShowing = false
                                 }
                             }, isShowing: self.$isShowing))
@@ -135,6 +133,7 @@ struct SwipeView: View {
                 )
                     
             }
+            
             
             /*
             return ScrollView(.horizontal, showsIndicators: true){
@@ -196,6 +195,7 @@ struct SwipeView: View {
                 })
             )
             */
+            
         }
     }
 }

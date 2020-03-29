@@ -72,51 +72,19 @@ struct View1: View {
         
     }
 }
+
+
 //個人空間的拉
-struct View2: View {
-    @Binding var push: Int
+struct PersonalSpace: View {
+    @State private var push = 0
     @State private var article = ""
+    
     var body: some View{
-        VStack {
-            //to origin page
-            Button(action: {
-                withAnimation(.easeOut(duration: 0.3)) {
-                    self.push = 0
-                }
-            }) {
-                VStack{
-                    Text("Personal Page")
-                    Text("PUSH")
-                }
-               
-            }
-            //to login page
-            Button(action: {
-                withAnimation(.easeOut(duration: 0.3)) {
-                    self.push = 3
-                }
-            }) {
-                VStack{
-                    Text("Login Page")
-                    Text("PUSH   a")
-                }
-               
-            }
-            VStack{
-                TextField("標題...", text: $article)
-                .frame(width: 350, height: 50)
-                .font(.system(size: 30))
-                .padding()
-                .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color.green, lineWidth: 3)
-                )
-            }
-            
-        }
-        .edgesIgnoringSafeArea(.all)
+        return AnyView(PersonalSpaceView())
     }
 }
+
+
 //登入頁面的拉
 struct View3: View {
     @Binding var push: Int
@@ -303,23 +271,26 @@ struct ManagerView: View {
     
     
     switch push {
-                   //起始頁面
+                //起始頁面
                case 0:
                    return AnyView(View1(push: $push))
                   
                    .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .leading)))
-                   //討論版
+                //討論版
                case 1:
                   return AnyView(ContentViewA(push: $push))
                       .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .trailing)))
-                   
-                   //個人空間
+                
+                /*
+                //個人空間
                case 2:
                return AnyView(View2(push: $push))
                    .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .trailing)))
+                
                case 3:
                return AnyView(View3(push: $push))
                    .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .trailing)))
+                */
                default:
                    return AnyView(View1(push: $push))
                       .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .trailing)))
@@ -341,7 +312,7 @@ struct ContentView: View {
                 Text("交通")
             }
             .tag(1)
-            setting().tabItem{
+            PersonalSpace().tabItem{
                 Image(systemName: "square.and.pencil")
                 Text("個人")
             }
